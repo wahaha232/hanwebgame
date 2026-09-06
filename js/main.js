@@ -95,27 +95,38 @@
     }
     loadScript("https://cdn.jsdelivr.net/npm/js-dos@7.1.3/dist/js-dos.js")
       .then(function () {
-        if (typeof window.Dos !== "function") throw new Error("Dos not found");
+        if (typeof window.Dos !== "function") throw new Error("Dos global not found");
         var host = screen || document.createElement("div");
         if (!screen) document.getElementById("emulator").appendChild(host);
-        var player = window.Dos(host);
+        var player;
+        try { player = window.Dos(host); } catch (e) { throw new Error("Dos init: " + e.message); }
         window.__dosPlayer = player;
         player.run(bundleUrl(game)).then(function () {
           if (note) note.classList.add("hidden");
-        }).catch(function () { showError(true); });
+        }).catch(function (e) {
+          showError(true, "run: " + (e && e.message ? e.message : e));
+        });
       })
-      .catch(function () { showError(true); });
+      .catch(function (e) {
+        showError(true, "load: " + (e && e.message ? e.message : e));
+      });
   }
 
   function playGame(g, lang) {
     startEmulator(g, lang);
   }
 
-  function showError(on) {
+  function showError(on, detail) {
     var err = document.getElementById("errorScreen");
     if (!err) return;
-    if (on) err.classList.remove("hidden");
-    else err.classList.add("hidden");
+    if (on) {
+      err.classList.remove("hidden");
+      var det = document.getElementById("errDetail");
+      if (det) det.textContent = detail || "";
+      if (window.console) console.error("[dos] error:", detail);
+    } else {
+      err.classList.add("hidden");
+    }
   }
 
   document.addEventListener("DOMContentLoaded", function () {
