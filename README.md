@@ -1,24 +1,28 @@
-# weboldgame — 楚漢之爭 老遊戲網站(1990–2000 風格)
+# DOS CLASSIC GAMES — Retro DOS Web Platform
 
-三語網站骨架:繁體中文 / English / Español。
+「1990～2000 年代 DOS 經典遊戲 Web 平台」— Phase 1(網站架構)。
 
-## 頁面
-- `index.html` 首頁(標題/導覽/遊戲分類/簡介/網站資訊/Footer)
-- `categories.html` 遊戲分類(8 類,皆 0 款,顯示「尚未加入遊戲」)
-- `about.html` 關於本站
+> The platform is designed for legally obtained classic DOS software and games.
 
-## 三語切換
-`i18n.js`(字典)+ `main.js`(套用 + localStorage 記憶)。點擊頁面右上語系即可切換。
+## Phase 1(本版)
+- `index.html` — Retro DOS 首頁(Header / DOS Emulator Container / Available Games / Footer)
+- `style.css` — Windows 95/98 + MS-DOS 風格(bevel 框、深藍標題列、CRT 輕量 scanline)
+- `js/i18n.js` + `js/main.js` — 三語切換(繁體中文 / English / Español)
+- `games/games.json` — 遊戲清單設定(資料驅動,未來新增遊戲只需加此檔 + `/games/<id>/` 檔案)
+- `robots.txt`、`sitemap.xml`、SEO/OG meta
 
-## 風格
-依提示詞:1990–2000 早期網站感(固定寬度 800px、table 排版、細框線、小字、
-文字密集、深底 tile 背景、文字超連結),不使用現代 UI(Card/Hero/Rounded/Gradient)。
+## 開發階段(依規格)
+1. ✅ 網站骨架 + Game List + games.json
+2. ⏳ 整合 Browser DOS Emulator(js-dos / DOSBox WASM 擇一,本版未整合)
+3. ⏳ 讓「楚漢相爭」以原版 DOS 檔啟動(檔案須具合法授權)
+4. ⏳ Fullscreen / Sound / Reset / Pause / CRT Effect
+5. ⏳ Chrome / Edge / Firefox 測試、Responsive、效能
 
-## 架構規劃
-- 第一階段(本版):網站骨架 + 三語,未放任何遊戲。
-- 後續:每款遊戲於對應分類加入介紹頁,再視需要提供執行說明。
+## 遊戲檔案原則
+- 遊戲維持原始 DOS 程式,不重寫、不轉 HTML5、不反編譯。
+- 本 repo 目前**不含**任何遊戲 EXE/資料檔;加入前需確認合法使用權。
 
-## 執行
+## 本地執行
 ```
 cd D:\VS CODE\PROJECT\weboldgame
 python -m http.server 8000
