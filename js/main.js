@@ -80,7 +80,7 @@
   }
 
   function bundleUrl(g) {
-    return "games/" + g.id + ".jsdos";
+    return "games/" + g.id + ".jsdos?v=3";
   }
 
   function startEmulator(game, lang) {
