@@ -69,11 +69,46 @@
     req.send();
   }
 
-  function playGame(g, lang) {
-    // Phase 1: emulator will be integrated in Phase 2.
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement("script");
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = function () { reject(new Error("script load fail")); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function bundleUrl(g) {
+    return "games/" + g.id + ".jsdos";
+  }
+
+  function startEmulator(game, lang) {
+    var screen = document.getElementById("screen");
     var note = document.getElementById("emulatorNote");
-    if (note) { note.classList.remove("hidden"); }
-    showError(true);
+    var running = window.__dosPlayer;
+    if (running && running.stop) { try { running.stop(); } catch (e) {} window.__dosPlayer = null; }
+    showError(false);
+    if (screen) {
+      screen.innerHTML = '<div class="prompt">LOADING…</div>';
+      screen.style.height = "420px";
+    }
+    loadScript("https://cdn.jsdelivr.net/npm/js-dos@7.1.3/dist/js-dos.js")
+      .then(function () {
+        if (typeof window.Dos !== "function") throw new Error("Dos not found");
+        var host = screen || document.createElement("div");
+        if (!screen) document.getElementById("emulator").appendChild(host);
+        var player = window.Dos(host);
+        window.__dosPlayer = player;
+        player.run(bundleUrl(game)).then(function () {
+          if (note) note.classList.add("hidden");
+        }).catch(function () { showError(true); });
+      })
+      .catch(function () { showError(true); });
+  }
+
+  function playGame(g, lang) {
+    startEmulator(g, lang);
   }
 
   function showError(on) {
